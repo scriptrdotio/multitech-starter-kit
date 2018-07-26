@@ -1,0 +1,24 @@
+/**
+* This module contains some helper functions
+* @module utils
+*
+*/
+
+/**
+* 
+* 
+* @function publishResponse
+* @param {Object} [data] the data to be published 
+* @param {String} [channel] the channel to publish to
+* @param {String} [msgTag] the tag to be added to the data
+* @return {boolean} true
+*
+*/
+var publishResponse = function(channel, msgTag, data) {
+   var message = {"result": data};
+   
+   //Add a default id to identify the message published over the socket
+   message["id"] = msgTag;
+   
+   publish(channel, message);
+}

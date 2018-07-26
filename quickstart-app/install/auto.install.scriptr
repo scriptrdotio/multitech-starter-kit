@@ -1,0 +1,41 @@
+/**
+* 
+* Installation module prepare the environment for the app to work 
+* @module install
+*
+*/
+var responseObject = {};
+var pubsub = require("pubsub");
+var subdomain = require("subdomain");
+
+/** SETUP QUICK START APP REQUIRED CHANNELS IF NOT EXIST **/
+
+var channels =  ["responseChannel", "requestChannel"];
+
+var options = {
+  "subscribeACL": "anonymous",
+  "publishACL": "anonymous"
+}
+
+channels.forEach(function(channel) {
+   var step1 = pubsub.createChannel(channel, options);
+    if(step1.metadata.status == "failure" && step1.metadata.errorCode != "DUPLICATE_CHANNEL"){
+        throw(step1.metadata.errorDetail)
+    }
+   responseObject["channelCreation_"+channel] = JSON.stringify(step1)
+});
+
+/** SETUP QUICK START APP REQUIRED DOMAIN IF NO DOMAIN IS SET **/
+
+var _subdomain = request.account.accountKey;
+
+
+var step2 =  subdomain.create(_subdomain);
+if(step2.metadata.status == "failure" && step2.metadata.errorCode != "MAX_SUBDOMAINS_EXCEEDED"){
+    throw(step2.metadata.errorDetail)
+}
+
+responseObject["subdomainCreation_"+_subdomain] = JSON.stringify(step2);
+
+
+return responseObject;

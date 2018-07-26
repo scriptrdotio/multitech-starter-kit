@@ -1,0 +1,26 @@
+/**
+* The external entry of the application for the devices and simulator to send the information to the app
+* 
+* @module Ingest
+* @param {Number} [temperature] the Temperature as measured by the device
+* @param {Number} [luminosity] the Luminosity as measured by the device
+* @return{Object} the result of the operations
+*
+*/
+
+var deviceManager=require("../entities/deviceManager");
+
+//Ingest the request params or data
+var requestParams = request.body || request.parameters;
+
+var data = {
+    temperature: requestParams.temperature,
+    luminosity: requestParams.luminosity
+}
+
+var device = new deviceManager.Conduit();
+
+//Publish device data to listening clients
+device.publish(data);
+
+return data;

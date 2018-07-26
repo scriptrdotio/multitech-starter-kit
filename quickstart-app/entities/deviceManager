@@ -1,0 +1,39 @@
+
+/**
+* This module represents the device
+* @module deviceManager
+*
+*/
+var utils = require("./utils");
+
+//Message Tag used by device manager to tag the published data of the device.
+const msgTag = "conduit";
+
+
+//Channel used by device manager to publish the data of the device to subscribed clients.
+const pubChannel = "responseChannel";
+
+/**
+* The device Class
+* @class Conduit
+*
+*/
+function Conduit () {
+    
+}
+
+/**
+* Conduit Class function
+* @function publish
+* @param {Object} [data] the data to publish on the websockets
+* @throw {Error} if some thing not right
+* @return {Void}
+*
+*/
+Conduit.prototype.publish = function(data) {
+    try{
+        utils.publishResponse(pubChannel, msgTag, data);
+    }catch (ex){
+        throw ex;
+    }
+}

@@ -1,0 +1,75 @@
+/**
+* The data api used as simulator to simulate the payloads sent from the devices
+* It call the Ingest Api with payload with random data 
+* @module data
+* @return{Object}  the ingest call response 
+*
+*/
+//Running this simulator, virtualize a conduit call to the quick start app ingest api.
+var http = require("http");
+var subdomain = require("subdomain");
+
+// Load user subdomains
+var listSubdomainsResult =  subdomain.list();
+
+if(listSubdomainsResult.metadata && listSubdomainsResult.metadata.status == "success") {
+    if(listSubdomainsResult.result && listSubdomainsResult.result.subdomains &&listSubdomainsResult.result.subdomains.length > 0) {
+        
+        //Build the url of the ingest api
+        const  api= "https://"+ listSubdomainsResult.result.subdomains[0].name + ".scriptrapps.io/quickstart-app/api/ingest";
+        
+        //Generate random data to simulate the device data
+        var dataSnap=
+            {
+                "temperature": getRandomInt(0,50),
+                "luminosity": getRandomArbitrary(0,30000),
+                "pressure": getRandomInt(0,100000),
+                "location":{
+                    "lat": 1.909,
+                    "lon":19.00
+                }
+            };
+        
+        //Call the ingest api, with randomly generated data
+        var callResult = http.request({
+            "url" : api,
+            "method":"POST",
+            "bodyString":JSON.stringify(dataSnap),
+            "headers":{
+                "Content-Type":"application/json"
+            }
+        });
+        
+        return callResult;
+        
+    } else {
+        return "No subdomain set for your account. Please setup a subdomain in order to run the simulator.";
+    }
+} else {
+    	return "Unable to call the quick start application [\"/quickstart-app/api/ingest\"] api. Failure to load your account subdomain property."
+}
+
+/**
+* Random Int limits included
+* 
+* @function getRandomInt
+* @param {Number} [min] the minimum limit
+* @param {Number} [max] the maximum limit
+* @return{Number} the generated Random Int
+*
+*/
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+/**
+* Random Arbitrary
+* 
+* @function getRandomArbitrary
+* @param {Number} [min] the minimum limit
+* @param {Number} [max] the maximum limit
+* @return{Number} the generated Random Arbitrary
+*
+*/
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}

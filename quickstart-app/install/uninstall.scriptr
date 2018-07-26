@@ -1,0 +1,36 @@
+/**
+* 
+* UnInstallation module remove the created components by the Installation module
+* @module uninstall
+*
+*/
+var responseObject = {};
+var subdomain = require("subdomain");
+
+var pubsub = require("pubsub");
+
+/** REMOVE QUICK STAR APP CREATED CHANNELS **/
+var channels =  ["responseChannel", "requestChannel"];
+
+var options = {
+  "subscribeACL": "anonymous",
+  "publishACL": "anonymous"
+}
+
+channels.forEach(function(channel) {
+   var step1 = pubsub.deleteChannel(channel);
+   responseObject["channelDeletion_"+channel] = JSON.stringify(step1)
+});
+
+
+/** REMOVE QUICK STAR APP CREATED SUBDOMAIN **/
+
+
+var _subdomain = request.account.accountKey;
+
+
+
+var step2 = subdomain.delete(_subdomain);
+responseObject["subdomainDeletion_"+_subdomain] = JSON.stringify(step2)
+
+return responseObject;
